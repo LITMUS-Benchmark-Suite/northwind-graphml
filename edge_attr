@@ -1,0 +1,4 @@
+discount float
+label string
+quantity int
+unitPrice float
