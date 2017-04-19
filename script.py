@@ -166,7 +166,7 @@ def create_graphml(file_name):
     print(node_id)
     
     l = [dic_territories, dic_shippers, dic_suppliers, dic_regions, dic_orders, dic_employees, dic_categories, dic_customers]
-    m = ['terr', 'ship', 'supp', 'regi', 'orde', 'empl', 'cate', 'cust']
+    m = ['terr', 'ship', 'supp', 'regi', 'orde', 'empl', 'cate', 'cust', 'prod']
     
     graph_file = open(file_name, "w")
     graph_file.write("""<?xml version="1.0" encoding="UTF-8"?>
