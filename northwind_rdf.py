@@ -317,7 +317,7 @@ def create_format_edges(node, edge_id, node_attr = None):
         for each in node_attr:
             if each != "label":        
                 s = s + '\t\t\t<data key="%s">%s</data>\n' %(each, node_attr[each])
-    s = s + '\t\t</edge>'
+    s = s + '\t\t</edge>\n'
     return s
 
 def write_to_file(filehandler, node_id):
