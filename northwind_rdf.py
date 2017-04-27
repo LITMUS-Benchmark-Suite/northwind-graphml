@@ -296,6 +296,8 @@ def write_final(filehandler):
 def create_format(node, _id):
     s = '\t\t<node id="%d">\n' % (_id)
     for each in node:
+        if each=="label":
+            continue
         asciikey = re.sub(r'[^\x00-\x7F]+',' ', each)
         asciikey = asciikey.replace("&", "amp;")
         asciivalue = re.sub(r'[^\x00-\x7F]+',' ', node[each])
