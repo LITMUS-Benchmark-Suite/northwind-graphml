@@ -42,3 +42,11 @@ description string
 supplierID int
 shipName string
 customerID string
+productID int
+productName string
+quantityPerUnit string
+unitPrice float
+unitsOnOrder int
+unitsInStock int
+reorderLevel int
+discontinued string
