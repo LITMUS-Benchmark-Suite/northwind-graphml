@@ -50,3 +50,5 @@ unitsOnOrder int
 unitsInStock int
 reorderLevel int
 discontinued string
+labelV string
+label string
