@@ -19,7 +19,7 @@ def create_graphml(file_name):
             first_row = False
         else:
             m = row
-            dic_category = dict(zip(header[:-1], row[:-1]))
+            dic_category = dict(zip(header[:-1] + ['labelV'], row[:-1] + ['category']))
             dic_categories[m[0]] = dic_category
             print((m[0]))
             id_node_map["cate%s"%(row[0])] = node_id
@@ -37,7 +37,7 @@ def create_graphml(file_name):
             first_row = False
         else:
             m = row
-            dic_customer = dict(zip(header, row))
+            dic_customer = dict(zip(header + ['labelV'], row + ['customer']))
             dic_customers[m[0]] = dic_customer
             id_node_map["cust%s"%(row[0])] = node_id
             node_id+=1
@@ -55,7 +55,7 @@ def create_graphml(file_name):
             first_row = False
         else:
             m = row
-            dic_employee = dict(zip(header[:-2] + [header[-1]], row[:-2] + [row[-1]]))
+            dic_employee = dict(zip(header[:-2] + [header[-1], 'labelV'], row[:-2] + [row[-1], 'employee']))
             dic_employees[m[0]] = dic_employee
             id_node_map["empl%s"%(row[0])] = node_id
             node_id+=1
@@ -73,7 +73,7 @@ def create_graphml(file_name):
             first_row = False
         else:
             m = row
-            dic_order = dict(zip([header[0]] + header[3:6] + header[7:], [row[0]] + row[3:6] + row[7:]))
+            dic_order = dict(zip([header[0]] + header[3:6] + header[7:] + ['labelV'], [row[0]] + row[3:6] + row[7:] + ['order']))
             dic_orders[m[0]] = dic_order
             id_node_map["orde%s"%(row[0])] = node_id
             node_id+=1
@@ -90,8 +90,9 @@ def create_graphml(file_name):
             first_row = False
         else:
             m = row
-            dic_product = dict(zip(header[:2] + header[4:], row[2:] + row[4:]))
+            dic_product = dict(zip(header[:2] + header[4:] + ['labelV'], row[:2] + row[4:] + ['product']))
             dic_products[m[0]] = dic_product
+            print(dic_product)
             id_node_map["prod%s"%(row[0])] = node_id
             node_id+=1
 
@@ -108,7 +109,7 @@ def create_graphml(file_name):
             first_row = False
         else:
             m = row
-            dic_item = dict(zip(header, row))
+            dic_item = dict(zip(header + ['labelV'], row + ['region']))
             dic_regions[m[0]] = dic_item
             id_node_map["regi%s"%(row[0])] = node_id
             node_id+=1
@@ -125,7 +126,7 @@ def create_graphml(file_name):
             first_row = False
         else:
             m = row
-            dic_shipper = dict(zip(header, row))
+            dic_shipper = dict(zip(header + ['labelV'], row + ['shipper']))
             dic_shippers[m[0]] = dic_shipper
             id_node_map["ship%s"%(row[0])] = node_id
             node_id+=1
@@ -142,7 +143,7 @@ def create_graphml(file_name):
             first_row = False
         else:
             m = row
-            dic_item = dict(zip(header, row))
+            dic_item = dict(zip(header + ['labelV'], row + ['suppplier']))
             dic_suppliers[m[0]] = dic_item
             id_node_map["supp%s"%(row[0])] = node_id
             node_id+=1
@@ -159,7 +160,7 @@ def create_graphml(file_name):
             first_row = False
         else:
             m = row
-            dic_territory = dict(zip(header, row))
+            dic_territory = dict(zip(header + ['labelV'], row + ['territory']))
             dic_territories[m[0]] = dic_territory
             id_node_map["terr%s"%(row[0])] = node_id
             node_id+=1
@@ -205,7 +206,7 @@ def create_graphml(file_name):
     for each in dic_employees_2:
         if dic_employees_2[each]['reportsTo']!='NULL':
             edges.append((node_id, id_node_map['empl'+each],id_node_map['empl' + dic_employees_2[each]['reportsTo']]))
-            dic_edge_attributes[node_id] = {'label': 'reportsTo'}
+            dic_edge_attributes[node_id] = {'labelE': 'reportsTo'}
             node_id+=1
 
 
@@ -218,7 +219,7 @@ def create_graphml(file_name):
             first_row = False
         else:
             edges.append((node_id, id_node_map['empl'+row[0]],id_node_map['terr' + row[1]]))
-            dic_edge_attributes[node_id] = {'label': 'assignedTerritory'}
+            dic_edge_attributes[node_id] = {'labelE': 'assignedTerritory'}
             node_id+=1
     
     f = open("order-details.csv", "r")
@@ -230,7 +231,7 @@ def create_graphml(file_name):
             first_row = False
         else:
             edges.append((node_id, id_node_map['orde'+row[0]],id_node_map['prod' + row[1]]))
-            dic_edge_attributes[node_id] = {'label': 'has', 'unitPrice': row[2], 'quantity':row[3], 'discount':row[4]}
+            dic_edge_attributes[node_id] = {'labelE': 'has', 'unitPrice': row[2], 'quantity':row[3], 'discount':row[4]}
             node_id+=1
     
     f = open("products.csv", "r")
@@ -243,10 +244,10 @@ def create_graphml(file_name):
         else:
             m = row
             edges.append((node_id, id_node_map['prod'+row[0]],id_node_map['supp' + row[2]]))
-            dic_edge_attributes[node_id] = {'label': 'suppliedBy'}
+            dic_edge_attributes[node_id] = {'labelE': 'suppliedBy'}
             node_id+=1
             edges.append((node_id, id_node_map['prod'+row[0]],id_node_map['cate' + row[3]]))
-            dic_edge_attributes[node_id] = {'label': 'hasCategory'}
+            dic_edge_attributes[node_id] = {'labelE': 'hasCategory'}
             node_id+=1
 
     f = open("orders.csv", "r")
@@ -259,13 +260,13 @@ def create_graphml(file_name):
         else:
             m = row
             edges.append((node_id, id_node_map['orde'+row[0]],id_node_map['cust' + row[1]]))
-            dic_edge_attributes[node_id] = {'label': 'orderedBy'}
+            dic_edge_attributes[node_id] = {'labelE': 'orderedBy'}
             node_id+=1
             edges.append((node_id, id_node_map['orde'+row[0]],id_node_map['empl' + row[2]]))
-            dic_edge_attributes[node_id] = {'label': 'takenBy'}
+            dic_edge_attributes[node_id] = {'labelE': 'takenBy'}
             node_id+=1
             edges.append((node_id, id_node_map['orde'+row[0]],id_node_map['ship' + row[6]]))
-            dic_edge_attributes[node_id] = {'label': 'shippedBy'}
+            dic_edge_attributes[node_id] = {'labelE': 'shippedBy'}
             node_id+=1
 
     f = open("territories.csv", "r")
@@ -278,7 +279,7 @@ def create_graphml(file_name):
         else:
             m = row
             edges.append((node_id, id_node_map['terr'+row[0]],id_node_map['regi' + row[2]]))
-            dic_edge_attributes[node_id] = {'label': 'hasRegion'}
+            dic_edge_attributes[node_id] = {'labelE': 'hasRegion'}
             node_id+=1
     
     for i in range(len(edges)):
@@ -305,7 +306,7 @@ def create_format(node, _id, node_attr):
     return s
 
 def create_format_edge(details, tup,edge_attr):
-    s = '\t\t<edge id="%d" source="%d" target="%d" label="%s">\n' % (tup[0], tup[1], tup[2], details['label'])
+    s = '\t\t<edge id="%d" source="%d" target="%d" label="%s">\n' % (tup[0], tup[1], tup[2], details['labelE'])
     for each in details:
         if each not in edge_attr:
             edge_attr[each] = "string" + "|" + details[each]

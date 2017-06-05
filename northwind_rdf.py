@@ -44,7 +44,7 @@ def foo(filename, write_filename = "made_from_rdf.graphml"):
             model = foo2(each, ttt)
             if model is not None:
                 node_id_map[ttt] = node_id
-                node_details_map[ttt] = model
+                node_details_map[node_id] = model
                 node_id+=1
         except Exception as e:
             pass
@@ -295,9 +295,8 @@ def write_final(filehandler):
 
 def create_format(node, _id):
     s = '\t\t<node id="%d">\n' % (_id)
+    print(node)
     for each in node:
-        if each=="label":
-            continue
         asciikey = re.sub(r'[^\x00-\x7F]+',' ', each)
         asciikey = asciikey.replace("&", "amp;")
         asciivalue = re.sub(r'[^\x00-\x7F]+',' ', node[each])
@@ -307,12 +306,17 @@ def create_format(node, _id):
     return s
 
 def create_format_edges(node, edge_id, node_attr = None):
-    print(node)
+    #print(node)
     destination = node_id_map[node[2]]
     source = node_id_map[node[0]]
 
     label = node[1]
     s = '\t\t<edge id="%d" source="%d" target="%d" label="%s">\n' % (edge_id, source, destination, label)
+    if node_attr is None:
+        node_attr = {}
+        node_attr['labelE'] = label
+    else:
+        node_attr['labelE'] = label
     if node_attr is not None:    
         for each in node_attr:
             if each != "label":        
@@ -321,8 +325,15 @@ def create_format_edges(node, edge_id, node_attr = None):
     return s
 
 def write_to_file(filehandler, node_id):
-    for each in node_details_map:
-        filehandler.write(create_format(node_details_map[each], node_id_map[each]))
+    print("*****************")
+    print(node_id_map)
+    print("****************")
+    for each in node_id_map:
+        model = node_details_map[node_id_map[each]]
+        labelV = re.findall("[a-zA-Z]+", model['label'])[0].lower()
+        print(labelV)
+        model['labelV'] = labelV
+        filehandler.write(create_format(model, node_id_map[each]))
     for each in all_edges:
         if each in edge_attributes:
             filehandler.write(create_format_edges(each, node_id, edge_attributes[each]))
